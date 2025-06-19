@@ -1,4 +1,5 @@
 const { logger } = require("./logger");
+const { canRun, sendCommand, sleep } = require("./common");
 
 module.exports = async (client, message) => {
     if (client.global.paused || client.global.captchadetected) return;
@@ -574,7 +575,9 @@ async function checkcooldowns(client, channel) {
                                 }
                                 if (
                                     client.config.commands.progress.working
-                                        .axe &&
+                                        .axe ||
+                                    client.config.commands.progress.working.pickaxe ||
+                                    client.config.commands.progress.working.drill &&
                                     !progressworkingmultivalue
                                 ) {
                                     axecooldown = timetoms(cooldown);
@@ -797,13 +800,19 @@ async function checkcooldowns(client, channel) {
             }
         }
         if (
-            client.config.commands.progress.working.axe &&
+            client.config.commands.progress.working.axe ||
+            client.config.commands.progress.working.pickaxe ||
+            client.config.commands.progress.working.drill &&
             !progressworkingmultivalue
         ) {
             if (axecooldown > 0) {
-                working(client, channel, "axe", axecooldown + 3500);
+                if (client.config.commands.progress.working.axe) working(client, channel, "axe", axecooldown + 3500);
+                if (client.config.commands.progress.working.pickaxe) working(client, channel, "pickaxe", axecooldown + 3500);
+                if (client.config.commands.progress.working.drill) working(client, channel, "drill", axecooldown + 3500);
             } else {
-                working(client, channel, "axe", 7500);
+                if (client.config.commands.progress.working.axe) working(client, channel, "axe", 7500);
+                if (client.config.commands.progress.working.pickaxe) working(client, channel, "pickaxe", 7500);
+                if (client.config.commands.progress.working.drill) working(client, channel, "drill", 7500);
             }
         }
         if (
@@ -903,7 +912,7 @@ async function hunt(client, channel, extratime = 0) {
                 }
             });
         }
-    }, 1000 + extratime);
+    }, 2000 + extratime);
 
     setInterval(async () => {
         if (
@@ -984,7 +993,7 @@ async function hunt(client, channel, extratime = 0) {
                 }
             });
         }
-    }, 63000 + 1000 + extratime);
+    }, 64000 + extratime);
 }
 
 async function adventure(client, channel, extratime = 0) {
@@ -1094,27 +1103,27 @@ async function farm(client, channel, extratime = 0) {
         )
             return;
 
-        // Kiểm tra và chọn loại seed
-        if (client.global.inventory.farm.seed >= 1) {
-            farmseedtype = "basic";
-        } else if (client.global.inventory.farm.potatoseed >= 1) {
-            farmseedtype = "potato";
+        // Đổi thứ tự ưu tiên: bread -> carrot -> potato -> basic
+        if (client.global.inventory.farm.breadseed >= 1) {
+            farmseedtype = "bread";
         } else if (client.global.inventory.farm.carrotseed >= 1) {
             farmseedtype = "carrot";
-        } else if (client.global.inventory.farm.breadseed >= 1) {
-            farmseedtype = "bread";
+        } else if (client.global.inventory.farm.potatoseed >= 1) {
+            farmseedtype = "potato";
+        } else if (client.global.inventory.farm.seed >= 1) {
+            farmseedtype = "basic";
         }
 
         // Chỉ gửi lệnh farm nếu có seed
         if (farmseedtype) {
-        await channel.send({ content: `rpg farm ${farmseedtype}` }).then(() => {
-            client.global.totalworking++;
-            logger.info("Farm", "Progress-Farm", `Type: ${farmseedtype}`);
-        });
+            await channel.send({ content: `rpg farm ${farmseedtype}` }).then(() => {
+                client.global.totalworking++;
+                logger.info("Farm", "Progress-Farm", `Type: ${farmseedtype}`);
+            });
         } else {
             logger.warn("Farm", "Progress-Farm", "No seeds available in inventory");
         }
-    }, 1000 + extratime);
+    }, 2000 + extratime);
 
     setInterval(async () => {
         if (
@@ -1127,22 +1136,22 @@ async function farm(client, channel, extratime = 0) {
         )
             return;
 
-        // Kiểm tra và chọn loại seed
-        if (client.global.inventory.farm.seed >= 1) {
-            farmseedtype = "basic";
-        } else if (client.global.inventory.farm.potatoseed >= 1) {
-            farmseedtype = "potato";
+        // Đổi thứ tự ưu tiên: bread -> carrot -> potato -> basic
+        if (client.global.inventory.farm.breadseed >= 1) {
+            farmseedtype = "bread";
         } else if (client.global.inventory.farm.carrotseed >= 1) {
             farmseedtype = "carrot";
-        } else if (client.global.inventory.farm.breadseed >= 1) {
-            farmseedtype = "bread";
+        } else if (client.global.inventory.farm.potatoseed >= 1) {
+            farmseedtype = "potato";
+        } else if (client.global.inventory.farm.seed >= 1) {
+            farmseedtype = "basic";
         }
 
         // Chỉ gửi lệnh farm nếu có seed
         if (farmseedtype) {
-        await channel.send({ content: `rpg farm ${farmseedtype}` }).then(() => {
-            logger.info("Farm", "Progress-Farm", `Type: ${farmseedtype}`);
-        });
+            await channel.send({ content: `rpg farm ${farmseedtype}` }).then(() => {
+                logger.info("Farm", "Progress-Farm", `Type: ${farmseedtype}`);
+            });
         } else {
             logger.warn("Farm", "Progress-Farm", "No seeds available in inventory");
         }

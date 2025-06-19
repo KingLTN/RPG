@@ -1,4 +1,5 @@
 const { logger } = require("./logger");
+const { canRun, sendCommand, sleep } = require("./common");
 
 class ShopManager {
     constructor(client) {
@@ -22,7 +23,7 @@ class ShopManager {
         // Thiết lập interval để kiểm tra và mua items định kỳ
         const checkInterval = this.client.config.settings.shop.check_interval || 300000; // 5 phút mặc định
         this.checkInterval = setInterval(async () => {
-            if (!this.client.global.paused && !this.client.global.captchadetected) {
+            if (canRun(this.client)) {
                 await this.checkAndBuyWhenReady();
             }
         }, checkInterval);
@@ -71,7 +72,7 @@ class ShopManager {
         // Mua từng item
         for (const itemName of itemsToBuy) {
             await this.buyItem(channel, itemName);
-            await this.client.delay(2000); // Delay 2s giữa các lần mua
+            await sleep(2000); // Delay 2s giữa các lần mua
         }
     }
 
@@ -124,7 +125,7 @@ class ShopManager {
             this.currentPurchaseItem = itemName;
             
             // Gửi lệnh mua
-            await channel.send({ content: `rpg buy ${itemName}` });
+            await sendCommand(channel, `rpg buy ${itemName}`);
             
             // Set timeout để reset nếu không có phản hồi
             this.purchaseTimeout = setTimeout(() => {
@@ -172,10 +173,10 @@ class ShopManager {
             // Thử lại sau retry_delay * 2 nếu không đủ tiền (có thể kiếm được tiền)
             const retryDelay = (this.client.config.settings.shop.retry_delay || 60000) * 2;
             setTimeout(async () => {
-                if (!this.client.global.paused && !this.client.global.captchadetected) {
+                    if (canRun(this.client)) {
                     logger.info("ShopManager", "Retry", `Retrying purchase of ${item} after insufficient money`);
                     await this.buyItem(channel, item);
-                }
+                    }
             }, retryDelay);
             
         } else {
@@ -184,7 +185,7 @@ class ShopManager {
             // Thử lại sau retry_delay nếu gặp lỗi không xác định
             const retryDelay = this.client.config.settings.shop.retry_delay || 60000;
             setTimeout(async () => {
-                if (!this.client.global.paused && !this.client.global.captchadetected) {
+                if (canRun(this.client)) {
                     logger.info("ShopManager", "Retry", `Retrying purchase of ${item} after error`);
                     await this.buyItem(channel, item);
                 }

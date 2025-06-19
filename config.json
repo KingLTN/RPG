@@ -1,10 +1,8 @@
 {
- "midoservices_authkey": "mido_services.85522db7-0f09-478b-bdcd-b36543463251",
-
-    "prefix": "",
+  "prefix": "",
     "token": "",
-    "channelid": "1377455233944522872",
-    "userid": "419369142873882627",
+    "channelid": "",
+    "userid": "",
     "commands": {
         "rewards": {
             "daily": true,
@@ -23,9 +21,9 @@
                 "enable": true,
                 "types": {
                     "seed": true,
-                    "potato seed": false,
-                    "carrot seed": false,
-                    "bread seed": false
+                    "potato seed": true,
+                    "carrot seed":true,
+                    "bread seed": true
                 }
             },
             "working": {
@@ -33,9 +31,11 @@
                 "fish": false,
                 "pickup":false,
                 "mine": false,
-                "axe": true,
+                "axe": false,
                 "net": false,
-                "ladder": false
+                "ladder": false,
+                "pickaxe": true,
+                "drill": false
             }
         }
     },

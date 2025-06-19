@@ -67,6 +67,18 @@ client.eventManager = new EventManager(client);
 client.shopManager = new ShopManager(client);
 client.infoChecker = new InfoChecker(client);
 
+// Thêm biến lưu thời gian nhận tin nhắn cuối cùng
+client.lastMessageTime = Date.now();
+
+// Interval kiểm tra hoạt động của bot
+setInterval(() => {
+    const now = Date.now();
+    if (now - client.lastMessageTime > 180000) { // 3 phút
+        logger.error('Main', 'Watchdog', 'Không nhận được tin nhắn nào trong 3 phút, tự động khởi động lại bot!');
+        process.exit(1);
+    }
+}, 60000); // Kiểm tra mỗi 1 phút
+
 // Event handlers
 client.once('ready', () => {
     logger.info('Main', 'Ready', `Logged in as ${client.user.tag}`);

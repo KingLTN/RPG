@@ -102,33 +102,12 @@ module.exports = async (client, message) => {
                     });
 
                     // Thử giải captcha tự động - function không tồn tại nên luôn false
-                    const solved = false; // autoSolveCaptcha function không tồn tại
-                    if (solved) {
-                        // Captcha đã được giải thành công, webhook sẽ được gửi bởi phần xử lý "correct"
-                        logger.info("Bot", "Captcha", "Auto-solve successful");
-                    } else {
-                        // Cập nhật webhook nếu không giải được
-                        await webhook.send({
-                            embeds: [{
-                                title: '⚠️ Auto-solve Failed',
-                                description: 'Manual intervention required.',
-                                fields: [
-                                    {
-                                        name: 'Player',
-                                        value: `${client.user.tag}`,
-                                        inline: true
-                                    },
-                                    {
-                                        name: 'Status',
-                                        value: 'Waiting for manual solution',
-                                        inline: true
-                                    }
-                                ],
-                                color: 0xFFA500,
-                                timestamp: new Date()
-                            }]
-                        });
-                    }
+                    // const solved = false;
+                    // if (solved) {
+                    //     logger.info("Bot", "Captcha", "Auto-solve successful");
+                    // } else {
+                    //     // BỎ GỬI WEBHOOK 'Auto-solve Failed' ở đây
+                    // }
 
                 } catch (error) {
                     logger.error("Bot", "Webhook", `Failed to send webhook: ${error.message}`);
@@ -328,5 +307,10 @@ module.exports = async (client, message) => {
     // Xử lý shop response
     if (client.shopManager && client.config.settings.shop.enabled) {
         await client.shopManager.handleShopResponse(message);
+    }
+
+    // Cập nhật thời gian nhận tin nhắn cuối cùng cho watchdog
+    if (message.client && typeof message.client.lastMessageTime === 'number') {
+        message.client.lastMessageTime = Date.now();
     }
 }
