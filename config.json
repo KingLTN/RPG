@@ -1,10 +1,10 @@
 {
-    "midoservices_authkey": "",
+ "midoservices_authkey": "mido_services.85522db7-0f09-478b-bdcd-b36543463251",
 
     "prefix": "",
     "token": "",
-    "channelid": "",
-    "userid": "",
+    "channelid": "1377455233944522872",
+    "userid": "419369142873882627",
     "commands": {
         "rewards": {
             "daily": true,
@@ -47,13 +47,6 @@
             "autospecialtrade": true,
             "autoarena": true
         },
-        "duel": {
-            "enabled": false,
-            "target_user_id": "1378279967816945665",
-            "auto_accept": false,
-            "auto_send": false,
-            "cooldown": 7200000
-        },
         "shop": {
             "enabled": true,
             "items": {
@@ -72,7 +65,8 @@
         },
         "captcha_protection": {
             "enabled": true,
-            "webhook_url": ""
+            "webhook_url": "",
+            "notification": {
                 "desktop": false,
                 "discord": true,
                 "sound": false
@@ -91,8 +85,8 @@
                 "types": {
                     "common lootbox": true,
                     "uncommon lootbox": true,
-                    "rare lootbox": false,
-                    "EPIC lootbox": false,
+                    "rare lootbox": true,
+                    "EPIC lootbox": true,
                     "EDGY lootbox":  false,
                     "OMEGA lootbox": false
                 }
