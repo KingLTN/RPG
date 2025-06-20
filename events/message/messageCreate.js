@@ -301,6 +301,7 @@ module.exports = async (client, message) => {
                     `Casino training completed with writing`
                 );
             }
+            client.global.paused = false;
         }
     }
     

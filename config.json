@@ -63,6 +63,9 @@
             "check_interval": 300000,
             "retry_delay": 60000
         },
+        "hunt": {
+            "interval": 65000
+        },
         "captcha_protection": {
             "enabled": true,
             "webhook_url": "",
